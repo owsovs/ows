@@ -40,7 +40,7 @@ async def start(message: types.Message):
 
 @dp.message_handler(lambda message: message.text == "Создать новый тикет")
 async def create_ticket(message: types.Message):
-    await message.answer("Опишите проблему:", reply_markup=ReplyKeyboardMarkup(resize_keyboard=True).add(KeyboardButton("Отмена")))
+    await message.answer("Опиши проблему:", reply_markup=ReplyKeyboardMarkup(resize_keyboard=True).add(KeyboardButton("Отмена")))
     await SupportStates.waiting_for_message.set()
 
 @dp.message_handler(lambda message: message.text == "Отмена", state=SupportStates.waiting_for_message)
@@ -57,8 +57,7 @@ async def handle_ticket(message: types.Message, state: FSMContext):
     await bot.send_message(ADMIN_ID, f"Новое сообщение от {user_id}:\n\n{message.text}")
     await message.answer(f"Тикет #{ticket_number} создан.")
     await state.finish()
-    await message.answer("Что будем делать дальше?", reply_markup=main_keyboard(message.from_user.id == ADMIN_ID))
-
+    
 @dp.message_handler(lambda message: message.text == "Просмотреть тикеты")
 async def view_tickets(message: types.Message):
     user_id = message.from_user.id
@@ -80,7 +79,7 @@ async def reply_ticket(callback_query: types.CallbackQuery, state: FSMContext):
     user_id = callback_query.from_user.id
 
     await state.update_data(ticket_info=(user_id, ticket_number))
-    await bot.send_message(user_id, "Напишите сообщение для тикета:")
+    await bot.send_message(user_id, "Напиши сообщение для тикета:")
     await SupportStates.reply.set()
     await bot.answer_callback_query(callback_query.id)
 
